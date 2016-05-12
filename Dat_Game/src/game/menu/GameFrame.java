@@ -4,8 +4,6 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-// this is my COMMENT AHHHHH
-// again
 
 public class GameFrame extends JFrame
 {
