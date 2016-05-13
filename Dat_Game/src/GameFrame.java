@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-// ! can pass 'this' to a method and use it later ( like 'self' )
 
 public class GameFrame extends JFrame {
 
@@ -10,9 +9,10 @@ public class GameFrame extends JFrame {
 	
 	Ship ship;
 	
-	JButton left, right, up, down;
-	
+	//JButton left, right, up, down;
+	JPanel left, right, up, down;
 	JOptionPane payUsMoney;
+	JOptionPane instructions;
 	
 	public GameFrame (String _title, int _width, int _height) {
 		super(_title); // sets title
@@ -20,46 +20,156 @@ public class GameFrame extends JFrame {
 		width = _width; // saves width and height
 		height = _height;
 		payUsMoney = new JOptionPane();
-		payUsMoney.showMessageDialog(this, "Please Pay $9.99 to continue using Software!","Get Dat Money", JOptionPane.WARNING_MESSAGE);
+		payUsMoney.showMessageDialog(this, "Please Pay $9.99 to continue using Software!","Get Dat Money",
+									 JOptionPane.WARNING_MESSAGE);
+		instructions = new JOptionPane();
+		instructions.showMessageDialog(this, "Use WASD to move ship.", "Instructions", JOptionPane.WARNING_MESSAGE);
 
 		this.setSize(width, height); // sets width and height
 		this.setLayout(null); // free layout for x and y positioning
 		
 		// create ship and add to JFrame this
-		ship = new Ship(20, 20, 80, 80);
+		ship = new Ship(width / 2, height / 2, 80, 80, 3);
 		this.add(ship);
 		
+		this.addKeyListener(new moveKeyListener());
+		
 		// move ship right
-		right = new JButton("-->");
-		right.addActionListener(new moveButtonListener());
+		//right = new JButton("-->");
+		right = new JPanel();
+		//right.addActionListener(new moveButtonListener());
+		//right.addChangeListener(new moveButtonChangeListener());
+		//right.addMouseListener(new moveButtonMouseListener());
 		right.setBounds(80, 200, 50, 15);
 		this.add(right);
 		
 		// move ship left
-		left = new JButton("<--");
-		left.addActionListener(new moveButtonListener());
+		//left = new JButton("<--");
+		left = new JPanel();
+		//left.addMouseListener(new moveButtonMouseListener());
 		left.setBounds(30, 200, 50, 15);
 		this.add(left);
 		
-		up = new JButton("<--");
-		up.addActionListener(new moveButtonListener());
+		//up = new JButton("<--");
+		up = new JPanel();
+		//up.addMouseListener(new moveButtonMouseListener());
 		up.setBounds(45, 150, 15, 50);
 		this.add(up);
 		
-		down = new JButton("<--");
-		down.addActionListener(new moveButtonListener());
+		//down = new JButton("<--");
+		down = new JPanel();
+		//down.addMouseListener(new moveButtonMouseListener());
 		down.setBounds(45, 200, 15, 50);
 		this.add(down);
 	}
 
 	// -- Button Listeners --
-	private class moveButtonListener implements ActionListener {
+
+	private class moveKeyListener implements KeyListener {
+		
+		public void keyTyped (KeyEvent event) {
+			
+		}
+		
+		public void keyPressed (KeyEvent event) {
+			System.out.println("moveKeyListener (GameFrame): Pressed " + event.getKeyCode());
+			
+			if (event.getKeyCode() == event.VK_D)
+				ship.startRightEngines();
+			
+			else if (event.getKeyCode() == event.VK_A)
+				ship.startLeftEngines();
+			
+			else if (event.getKeyCode() == event.VK_W)
+				ship.startUpEngines();
+			
+			else if (event.getKeyCode() == event.VK_S)
+				ship.startDownEngines();
+		}
+		
+		public void keyReleased (KeyEvent event) {
+			System.out.println("moveKeyListener (GameFrame): Released " + event.getKeyCode());
+			
+			if (event.getKeyCode() == event.VK_D)
+				ship.stopRightEngines();
+			
+			else if (event.getKeyCode() == event.VK_A)
+				ship.stopLeftEngines();
+			
+			else if (event.getKeyCode() == event.VK_W)
+				ship.stopUpEngines();
+			
+			else if (event.getKeyCode() == event.VK_S)
+				ship.stopDownEngines();
+			
+		}
+		
+	}
+	
+	/*private class moveButtonMouseListener implements MouseListener {
+		
+		public void mouseClicked (MouseEvent event) {
+			if (event.getSource().equals(right))
+				ship.rightEnginesOn = true;
+			else if (event.getSource().equals(left))
+				ship.leftEnginesOn = true;
+			else if (event.getSource().equals(up))
+				ship.upEnginesOn = true;
+			else if (event.getSource().equals(down))
+				ship.downEnginesOn = true;
+		}
+		
+		public void mouseReleased (MouseEvent event) {
+			if (event.getSource().equals(right)) {
+				ship.rightEnginesOn = false;
+			}
+				
+			else if (event.getSource().equals(left)) {
+				ship.leftEnginesOn = false;
+			}
+					
+			else if (event.getSource().equals(up))
+				ship.upEnginesOn = false;
+						
+			else if (event.getSource().equals(down))
+				ship.downEnginesOn = false;
+		}
+		
+		public void mouseEntered (MouseEvent event) {}
+		public void mouseExited (MouseEvent event) {}
+		public void mousePressed (MouseEvent event) {}
+
+	}*/
+	
+	/*private class moveButtonChangeListener implements ChangeListener {
+		public void stateChanged (ChangeEvent event) {
+			
+			if (event.getSource().equals(right)) {
+				System.out.println("Change event detected");
+				ship.activateRightEngines();
+			}
+			
+			else if (event.getSource().equals(left))
+				ship.activateLeftEngines();
+			
+			else if (event.getSource().equals(up))
+				ship.activateUpEngines();
+			
+			else if (event.getSource().equals(down))
+				ship.activateDownEngines();
+			
+			else
+				System.out.println("moveButtonChangeListener (GameFrame): no button matching event.getSource()");
+		}
+	}*/
+	
+	/*private class moveButtonListener implements ActionListener {
 		public void actionPerformed (ActionEvent event) {
 			
-			if (event.getSource().equals(right)) // if right button is source
-				ship.moveRight(); // move right
+			//if (event.getSource().equals(right)) // if right button is source
+				//ship.moveRight(); // move right
 			
-			else if (event.getSource().equals(left)) // if left button is source
+			if (event.getSource().equals(left)) // if left button is source
 				ship.moveLeft(); // move left
 			
 			else if (event.getSource().equals(up)) // if up button is source
@@ -71,6 +181,6 @@ public class GameFrame extends JFrame {
 			else // neither right or left button called
 				System.out.println("moveButtonListener: no button matching event.getSource()");
 		}
-	}
+	}*/
 	
 }
