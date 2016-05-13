@@ -12,15 +12,18 @@ public class GameFrame extends JFrame {
 	
 	JButton left, right;
 	
+	JOptionPane payUsMoney;
+	
 	public GameFrame (String _title, int _width, int _height) {
 		super(_title); // sets title
 		
 		width = _width; // saves width and height
 		height = _height;
-		
+		payUsMoney = new JOptionPane();
+		payUsMoney.showMessageDialog(this, "Please Pay $9.99 to continue using Software!","Get Dat Money", JOptionPane.WARNING_MESSAGE);
+
 		this.setSize(width, height); // sets width and height
 		this.setLayout(null); // free layout for x and y positioning
-		this.setVisible(true);
 		
 		// create ship and add to JFrame this
 		ship = new Ship(20, 20, 80, 80);
@@ -39,6 +42,7 @@ public class GameFrame extends JFrame {
 		this.add(left);
 	}
 
+	// -- Button Listeners --
 	private class moveButtonListener implements ActionListener {
 		public void actionPerformed (ActionEvent event) {
 			
