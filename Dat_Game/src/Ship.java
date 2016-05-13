@@ -12,6 +12,9 @@ public class Ship extends JPanel {
 	
 	int speed;
 	
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	/* HOLY SHITY TODO, create engine objects.  Then we won't need 16 classes and methods for the ship movement, only 4! */
+	
 	boolean rightEnginesOn, leftEnginesOn, upEnginesOn, downEnginesOn = false;
 	boolean rightCruising, leftCruising, upCruising, downCruising = false;
 	
