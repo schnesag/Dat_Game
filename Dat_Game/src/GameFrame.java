@@ -10,7 +10,7 @@ public class GameFrame extends JFrame {
 	
 	Ship ship;
 	
-	JButton left, right;
+	JButton left, right, up, down;
 	
 	JOptionPane payUsMoney;
 	
@@ -38,8 +38,18 @@ public class GameFrame extends JFrame {
 		// move ship left
 		left = new JButton("<--");
 		left.addActionListener(new moveButtonListener());
-		left.setBounds(20, 200, 50, 15);
+		left.setBounds(30, 200, 50, 15);
 		this.add(left);
+		
+		up = new JButton("<--");
+		up.addActionListener(new moveButtonListener());
+		up.setBounds(45, 150, 15, 50);
+		this.add(up);
+		
+		down = new JButton("<--");
+		down.addActionListener(new moveButtonListener());
+		down.setBounds(45, 200, 15, 50);
+		this.add(down);
 	}
 
 	// -- Button Listeners --
@@ -47,10 +57,16 @@ public class GameFrame extends JFrame {
 		public void actionPerformed (ActionEvent event) {
 			
 			if (event.getSource().equals(right)) // if right button is source
-				ship.increaseX(); // move right
+				ship.moveRight(); // move right
 			
 			else if (event.getSource().equals(left)) // if left button is source
-				ship.decreaseX(); // move left
+				ship.moveLeft(); // move left
+			
+			else if (event.getSource().equals(up)) // if up button is source
+				ship.moveUp(); // move up
+			
+			else if (event.getSource().equals(down)) // if down button is source
+				ship.moveDown(); // move down
 			
 			else // neither right or left button called
 				System.out.println("moveButtonListener: no button matching event.getSource()");
