@@ -9,8 +9,6 @@ public class GameFrame extends JFrame {
 	
 	Ship ship;
 	
-	//JButton left, right, up, down;
-	JPanel left, right, up, down;
 	JOptionPane payUsMoney;
 	JOptionPane instructions;
 	
@@ -29,43 +27,67 @@ public class GameFrame extends JFrame {
 		this.setLayout(null); // free layout for x and y positioning
 		
 		// create ship and add to JFrame this
-		ship = new Ship(width / 2, height / 2, 80, 80, 3);
+		ship = new Ship(this, width / 2, height / 2, 80, 80, 0.1);
 		this.add(ship);
 		
 		this.addKeyListener(new moveKeyListener());
 		
-		// move ship right
-		//right = new JButton("-->");
-		right = new JPanel();
-		//right.addActionListener(new moveButtonListener());
-		//right.addChangeListener(new moveButtonChangeListener());
-		//right.addMouseListener(new moveButtonMouseListener());
+		/* JButton examples -----------
+		right = new JButton("-->");
+		right.addActionListener(new moveButtonListener());
+		right.addChangeListener(new moveButtonChangeListener());
+		right.addMouseListener(new moveButtonMouseListener());
 		right.setBounds(80, 200, 50, 15);
-		this.add(right);
-		
-		// move ship left
-		//left = new JButton("<--");
-		left = new JPanel();
-		//left.addMouseListener(new moveButtonMouseListener());
-		left.setBounds(30, 200, 50, 15);
-		this.add(left);
-		
-		//up = new JButton("<--");
-		up = new JPanel();
-		//up.addMouseListener(new moveButtonMouseListener());
-		up.setBounds(45, 150, 15, 50);
-		this.add(up);
-		
-		//down = new JButton("<--");
-		down = new JPanel();
-		//down.addMouseListener(new moveButtonMouseListener());
-		down.setBounds(45, 200, 15, 50);
-		this.add(down);
+		this.add(right);*/
+
 	}
 
-	// -- Button Listeners --
+	// -- Key and Button Listeners --
 
 	private class moveKeyListener implements KeyListener {
+		
+		public void keyTyped (KeyEvent event) {
+			
+		}
+		
+		public void keyPressed (KeyEvent event) {
+			System.out.println("moveKeyListener (GameFrame): Pressed " + event.getKeyCode());
+			
+			if (event.getKeyCode() == event.VK_D)
+				ship.rightEngines();
+			
+			else if (event.getKeyCode() == event.VK_A)
+				ship.leftEngines();
+			
+			else if (event.getKeyCode() == event.VK_W)
+				ship.upEngines();
+			
+			else if (event.getKeyCode() == event.VK_S)
+				ship.downEngines();
+		}
+		
+		public void keyReleased (KeyEvent event) {
+			System.out.println("moveKeyListener (GameFrame): Released " + event.getKeyCode());
+			
+			if (event.getKeyCode() == event.VK_D)
+				ship.rightEngines();
+			
+			else if (event.getKeyCode() == event.VK_A)
+				ship.leftEngines();
+			
+			else if (event.getKeyCode() == event.VK_W)
+				ship.upEngines();
+			
+			else if (event.getKeyCode() == event.VK_S)
+				ship.downEngines();
+			
+		}
+		
+	}
+	
+	// OLD STUFF
+	
+	/*private class moveKeyListener implements KeyListener {
 		
 		public void keyTyped (KeyEvent event) {
 			
@@ -104,8 +126,7 @@ public class GameFrame extends JFrame {
 			
 		}
 		
-	}
-	
+	}*/
 	/*private class moveButtonMouseListener implements MouseListener {
 		
 		public void mouseClicked (MouseEvent event) {

@@ -6,11 +6,15 @@ import javax.swing.*;
 
 public class Ship extends JPanel {
 	
+	GameFrame parent;
+	
 	int width, height;
-	float xcenter, ycenter;
+	double xcenter, ycenter;
 	int xpos, ypos;
 	
-	int speed;
+	double xvel, yvel = 0;
+	double acceleration;
+	double maxvel = 6;
 	
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	/* HOLY SHITY TODO, create engine objects.  Then we won't need 16 classes and methods for the ship movement, only 4! */
@@ -20,9 +24,11 @@ public class Ship extends JPanel {
 	
 	Ship self; // used when calling ship in private classes
 
-	public Ship (float _xcenter, float _ycenter, int _width, int _height, int _speed) {
+	public Ship (GameFrame _parent, float _xcenter, float _ycenter, int _width, int _height, double _acceleration) {
 		super();
 		self = this;
+		
+		parent = _parent;
 		
 		// dimensions of JPanel
 		width = _width;
@@ -37,7 +43,8 @@ public class Ship extends JPanel {
 		xpos = (int) xcenter - (width / 2);
 		ypos = (int) ycenter - (height / 2);
 		
-		speed = _speed;
+		// rate which velocities increase
+		acceleration = _acceleration;
 		
 		this.setBounds(xpos, ypos, width, height);
 		this.setVisible(true);
@@ -54,14 +61,41 @@ public class Ship extends JPanel {
 				catch (InterruptedException e) { }
 				
 				// move ship based on engine status
-				if (rightEnginesOn && rightCruising)
+				/*if (rightEnginesOn && rightCruising)
 					xcenter += speed;
 				if (leftEnginesOn && leftCruising)
 					xcenter -= speed;
 				if (upEnginesOn && upCruising)
 					ycenter -= speed;
 				if (downEnginesOn && downCruising)
-					ycenter += speed;
+					ycenter += speed;*/
+				
+				
+				// screen wrapping for ship in JFrame parent
+				if (xcenter < 0)
+					xcenter = parent.width + xcenter;
+				else if (xcenter > parent.width)
+					xcenter = xcenter - parent.width;
+				
+				if (ycenter < 0)
+					ycenter = parent.height + ycenter;
+				else if (ycenter > parent.height)
+					ycenter = ycenter - parent.height;
+				
+				// increase velocities if engines are one (add acceleration to velocities)
+				// includes maximum velocity checking (NEED more accurate Pythagorean Theorem checking later)
+				if (rightEnginesOn && xvel < maxvel)
+					xvel += acceleration;
+				if (leftEnginesOn && xvel > -(maxvel))
+					xvel -= acceleration;
+				if (upEnginesOn && yvel > -(maxvel))
+					yvel -= acceleration;
+				if (downEnginesOn && yvel < maxvel)
+					yvel += acceleration;
+				
+				// add velocities to positions
+				xcenter += xvel;
+				ycenter += yvel;
 				
 				// calculate coordinate positions for top left corner of JPanel
 				xpos = (int) xcenter - (width / 2);
@@ -77,13 +111,29 @@ public class Ship extends JPanel {
 	public void paintComponent (Graphics g) {
 		super.paintComponent(g);
 		
+		g.setColor(Color.RED);
 		g.fillRect(0, 0, width, height);
 		
 		//this.revalidate(); and
 		//this.repaint(); to redraw JPanel items
 	}
 	
-	public void startRightEngines () {
+	public void rightEngines () {
+		rightEnginesOn = !rightEnginesOn;
+	}
+	public void leftEngines () {
+		leftEnginesOn = !leftEnginesOn;
+	}
+	public void upEngines () {
+		upEnginesOn = !upEnginesOn;
+	}
+	public void downEngines () {
+		downEnginesOn = !downEnginesOn;
+	}
+	
+	// OLD STUFF
+	
+	/*public void startRightEngines () {
 		rightEnginesOn = true;
 		(new StartRightThread()).start();
 	}
@@ -241,7 +291,7 @@ public class Ship extends JPanel {
 				ycenter += speed * i * 0.01; // messed up for testing purposes
 			}
 		}
-	}
+	}*/
 	
 	
 	/*private class SmoothXIncrease extends Thread {
