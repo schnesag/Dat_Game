@@ -16,11 +16,23 @@ public class Ship extends JPanel {
 	double acceleration;
 	double maxvel = 6;
 	
-	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	/* HOLY SHITY TODO, create engine objects.  Then we won't need 16 classes and methods for the ship movement, only 4! */
+	double rotation = - (Math.PI / 2); // starting rotation for ship
+	double rotationRate = 0.1; // radians per frame ship turns
 	
-	boolean rightEnginesOn, leftEnginesOn, upEnginesOn, downEnginesOn = false;
-	boolean rightCruising, leftCruising, upCruising, downCruising = false;
+	// coordinates at center of ship relative to JPanel
+	double shipXCenter;
+	double shipYCenter;
+	
+	// X and Y coordinates for ship art
+	int[] artXPoints;
+	int[] artYPoints;
+	
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	/* @TODO, create engine objects.  Then we won't need 16 classes and methods for the ship movement,
+	 *  only 4! */
+	
+	boolean forwardEnginesOn, reverseEnginesOn = false;
+	boolean rotatingRight, rotatingLeft = false;
 	
 	Ship self; // used when calling ship in private classes
 
@@ -34,6 +46,9 @@ public class Ship extends JPanel {
 		width = _width;
 		height = _height;
 		
+		shipXCenter = width / 2;
+		shipYCenter = height / 2;
+		
 		// center of JPanel in JFrame
 		// use these to move ship's location
 		xcenter = _xcenter;
@@ -42,6 +57,10 @@ public class Ship extends JPanel {
 		// will be calculated just before drawing stage of UpdateShip.run() thread
 		xpos = (int) xcenter - (width / 2);
 		ypos = (int) ycenter - (height / 2);
+		
+		// triangle JPanel art positions
+		artXPoints = new int[3];
+		artYPoints = new int[3];
 		
 		// rate which velocities increase
 		acceleration = _acceleration;
@@ -60,16 +79,6 @@ public class Ship extends JPanel {
 				try { Thread.sleep(16); }
 				catch (InterruptedException e) { }
 				
-				// move ship based on engine status
-				/*if (rightEnginesOn && rightCruising)
-					xcenter += speed;
-				if (leftEnginesOn && leftCruising)
-					xcenter -= speed;
-				if (upEnginesOn && upCruising)
-					ycenter -= speed;
-				if (downEnginesOn && downCruising)
-					ycenter += speed;*/
-				
 				
 				// screen wrapping for ship in JFrame parent
 				if (xcenter < 0)
@@ -82,16 +91,32 @@ public class Ship extends JPanel {
 				else if (ycenter > parent.height)
 					ycenter = ycenter - parent.height;
 				
-				// increase velocities if engines are one (add acceleration to velocities)
-				// includes maximum velocity checking (NEED more accurate Pythagorean Theorem checking later)
-				if (rightEnginesOn && xvel < maxvel)
-					xvel += acceleration;
-				if (leftEnginesOn && xvel > -(maxvel))
-					xvel -= acceleration;
-				if (upEnginesOn && yvel > -(maxvel))
-					yvel -= acceleration;
-				if (downEnginesOn && yvel < maxvel)
-					yvel += acceleration;
+				
+				// ship rotation
+				if (rotatingRight)
+					rotation += rotationRate;
+				if (rotatingLeft)
+					rotation -= rotationRate;
+				
+				// triangle point rotation
+				artXPoints[0] = (int) (shipXCenter + 20 * Math.cos(rotation));
+				artXPoints[1] = (int) (shipXCenter + 20 * Math.cos(rotation - (Math.PI * 2 / 3)));
+				artXPoints[2] = (int) (shipXCenter + 20 * Math.cos(rotation + (Math.PI * 2 / 3)));
+				
+				artYPoints[0] = (int) (shipYCenter + 20 * Math.sin(rotation));
+				artYPoints[1] = (int) (shipYCenter + 20 * Math.sin(rotation - (Math.PI * 2 / 3)));
+				artYPoints[2] = (int) (shipYCenter + 20 * Math.sin(rotation + (Math.PI * 2 / 3)));
+				
+				// changes ship velocities based on rotation
+				if (forwardEnginesOn) {
+					xvel += Math.cos(rotation) * acceleration;
+					yvel += Math.sin(rotation) * acceleration;
+				}
+				if (reverseEnginesOn) {
+					xvel -= Math.cos(rotation) * acceleration;
+					yvel -= Math.sin(rotation) * acceleration;
+				}
+
 				
 				// add velocities to positions
 				xcenter += xvel;
@@ -112,314 +137,32 @@ public class Ship extends JPanel {
 		super.paintComponent(g);
 		
 		g.setColor(Color.RED);
-		g.fillRect(0, 0, width, height);
+		//g.fillRect(0, 0, width, height);
+		
+		// triangle of ship
+		g.fillPolygon(artXPoints, artYPoints, artXPoints.length);
+		
+		// line pointing to front of triangle
+		g.setColor(Color.BLACK);
+		g.drawLine((int) shipXCenter, (int) shipYCenter, artXPoints[0], artYPoints[0]);
 		
 		//this.revalidate(); and
 		//this.repaint(); to redraw JPanel items
 	}
 	
-	public void rightEngines () {
-		rightEnginesOn = !rightEnginesOn;
-	}
-	public void leftEngines () {
-		leftEnginesOn = !leftEnginesOn;
-	}
-	public void upEngines () {
-		upEnginesOn = !upEnginesOn;
-	}
-	public void downEngines () {
-		downEnginesOn = !downEnginesOn;
-	}
-	
-	// OLD STUFF
-	
-	/*public void startRightEngines () {
-		rightEnginesOn = true;
-		(new StartRightThread()).start();
-	}
-	public void startLeftEngines() {
-		leftEnginesOn = true;
-		(new StartLeftThread()).start();
-	}
-	public void startUpEngines() {
-		upEnginesOn = true;
-		(new StartUpThread()).start();
-	}
-	public void startDownEngines() {
-		downEnginesOn = true;
-		(new StartDownThread()).start();
-	}
-	
-	public void stopRightEngines () {
-		rightEnginesOn = false;
-		(new SlowRightThread()).start();
-	}
-	public void stopLeftEngines () {
-		leftEnginesOn = false;
-		(new SlowLeftThread()).start();
-	}
-	public void stopUpEngines () {
-		upEnginesOn = false;
-		(new SlowUpThread()).start();
-	}
-	public void stopDownEngines () {
-		downEnginesOn = false;
-		(new SlowDownThread()).start();
-	}
-	
-	private class StartRightThread extends Thread {
-		public void run () {
-			System.out.println("speeding up right movement thread started");
-			
-			for (int i = 1; i <= 99; i ++) {
-				try { Thread.sleep(16); } catch (InterruptedException e) { }
-				
-				if (rightEnginesOn == false) // kill thread if right engines turn off
-					this.stop();
-				
-				xcenter += speed * i * 0.01; // messed up for testing purposes
-			}
-			rightCruising = true;
-		}
-	}
-	private class StartLeftThread extends Thread {
-		public void run () {
-			System.out.println("speeding up left movement thread started");
-			
-			for (int i = 1; i <= 99; i ++) {
-				try { Thread.sleep(16); } catch (InterruptedException e) { }
-				
-				if (leftEnginesOn == false) // kill thread if right engines turn off
-					this.stop();
-				
-				xcenter -= speed * i * 0.01; // messed up for testing purposes
-			}
-			leftCruising = true;
-		}
-	}
-	private class StartUpThread extends Thread {
-		public void run () {
-			System.out.println("speeding up up movement thread started");
-			
-			for (int i = 1; i <= 99; i ++) {
-				try { Thread.sleep(16); } catch (InterruptedException e) { }
-				
-				if (upEnginesOn == false) // kill thread if right engines turn off
-					this.stop();
-				
-				ycenter -= speed * i * 0.01; // messed up for testing purposes
-			}
-			upCruising = true;
-		}
-	}
-	private class StartDownThread extends Thread {
-		public void run () {
-			System.out.println("speeding up down movement thread started");
-			
-			for (int i = 1; i <= 99; i ++) {
-				try { Thread.sleep(16); } catch (InterruptedException e) { }
-				
-				if (downEnginesOn == false) // kill thread if right engines turn off
-					this.stop();
-				
-				ycenter += speed * i * 0.01; // messed up for testing purposes
-			}
-			downCruising = true;
-		}
-	}
-	
-	public class SlowRightThread extends Thread {
-		public void run () {
-			System.out.println("slowing right movement thread started");
-			
-			rightCruising = false;
-			
-			for (int i = 99; i >= 1; i --) {
-				try { Thread.sleep(16); } catch (InterruptedException e) { }
-				
-				if (rightEnginesOn) // kill thread if right engines turn back on
-					this.stop();
-				
-				xcenter += speed * i * 0.01; // messed up for testing purposes
-			}
-		}
-	}
-	public class SlowLeftThread extends Thread {
-		public void run () {
-			System.out.println("slowing left movement thread started");
-			
-			leftCruising = false;
-			
-			for (int i = 99; i > 0; i --) {
-				try { Thread.sleep(16); } catch (InterruptedException e) { }
-				
-				if (leftEnginesOn) // kill thread if right engines turn back on
-					this.stop();
-				
-				xcenter -= speed * i * 0.01; // messed up for testing purposes
-			}
-		}
-	}
-	public class SlowUpThread extends Thread {
-		public void run () {
-			System.out.println("slowing up movement thread started");
-			
-			upCruising = false;
-			
-			for (int i = 99; i > 0; i --) {
-				try { Thread.sleep(16); } catch (InterruptedException e) { }
-				
-				if (upEnginesOn) // kill thread if right engines turn back on
-					this.stop();
-				
-				ycenter -= speed * i * 0.01; // messed up for testing purposes
-			}
-		}
-	}
-	public class SlowDownThread extends Thread {
-		public void run () {
-			System.out.println("slowing down movement thread started");
-			
-			downCruising = false;
-			
-			for (int i = 99; i > 0; i --) {
-				try { Thread.sleep(16); } catch (InterruptedException e) { }
-				
-				if (downEnginesOn) // kill thread if right engines turn back on
-					this.stop();
-				
-				ycenter += speed * i * 0.01; // messed up for testing purposes
-			}
-		}
-	}*/
-	
-	
-	/*private class SmoothXIncrease extends Thread {
-		public void run () {
-			System.out.println("smooth x increase thread started");
-			//stop(); will stop execution
-			for (int i = 90; i > 0; i --) {
-				try { Thread.sleep(16); }
-				catch (InterruptedException e) { }
 
-				xcenter += (float) speed * i;
-			}
-		}
+	public void forwardEngines () {
+		forwardEnginesOn = !forwardEnginesOn;
+	}
+	public void reverseEngines () {
+		reverseEnginesOn = !reverseEnginesOn;
 	}
 	
-	private class SmoothXDecrease extends Thread {
-		public void run () {
-			System.out.println("smooth x decrease thread started");
-			//stop(); will stop execution
-			for (int i = 90; i > 0; i --) {
-				try { Thread.sleep(16); }
-				catch (InterruptedException e) { }
-
-				xcenter -= (int) (i / 10);
-			}
-		}
+	public void rotateRight () {
+		rotatingRight = !rotatingRight;
 	}
-	
-	private class SmoothYDecrease extends Thread {
-		public void run () {
-			System.out.println("smooth y decrease thread started");
-			
-			for (int i = 90; i > 0; i --) {
-				try { Thread.sleep(16); }
-				catch (InterruptedException e) { }
-				
-				ycenter -= (int) (i / 10);
-			}
-		}
-	}
-	
-	private class SmoothYIncrease extends Thread {
-		public void run () {
-			System.out.println("smooth y increase thread started");
-			
-			for (int i = 90; i > 0; i --) {
-				try { Thread.sleep(16); }
-				catch (InterruptedException e) { }
-				
-				ycenter += (int) (i / 10);
-			}
-		}
-	}*/
-	
-	
-	/*public void activateRightEngines () {
-		if (rightEnginesOn == false) {
-			rightEnginesOn = true;
-			xcenter += 10;
-			System.out.println("was false");
-		}
-		
-		else {
-			(new SmoothXIncrease()).start();
-			rightEnginesOn = false;
-			System.out.println("was true");
-		}
-	}
-	
-	public void activateLeftEngines () {
-		if (leftEnginesOn == false) {
-			leftEnginesOn = true;
-			xcenter -= 10;
-		}
-		
-		else {
-			leftEnginesOn = false;
-			(new SmoothXDecrease()).start();
-		}
-	}
-	
-	public void activateUpEngines () {
-		if (upEnginesOn == false) {
-			upEnginesOn = true;
-			ycenter -= 10;
-		}
-		
-		else {
-			upEnginesOn = false;
-			(new SmoothYDecrease()).start();
-		}
+	public void rotateLeft () {
+		rotatingLeft = !rotatingLeft;
 	}
 
-	public void activateDownEngines () {
-		if (downEnginesOn == false) {
-			downEnginesOn = true;
-			ycenter += 10;
-		}
-		
-		else {
-			downEnginesOn = false;
-			(new SmoothYIncrease()).start();
-		}
-	}*/
-	
-	/*public void moveRight () {
-		xcenter += 10;
-		
-		(new SmoothXIncrease()).start();
-	}
-	
-	public void moveLeft () {
-		xcenter -= 10;
-		
-		(new SmoothXDecrease()).start();
-	}
-	public void moveUp () {
-		ycenter -= 10;
-		
-		(new SmoothYDecrease()).start();
-	}
-	
-	public void moveDown () {
-		ycenter += 10;
-		
-		(new SmoothYIncrease()).start();
-	}*/
-
-	
-	
 }

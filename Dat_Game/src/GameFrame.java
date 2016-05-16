@@ -51,35 +51,35 @@ public class GameFrame extends JFrame {
 		}
 		
 		public void keyPressed (KeyEvent event) {
-			System.out.println("moveKeyListener (GameFrame): Pressed " + event.getKeyCode());
+			//System.out.println("moveKeyListener (GameFrame): Pressed " + event.getKeyCode());
 			
 			if (event.getKeyCode() == event.VK_D)
-				ship.rightEngines();
+				ship.rotateRight();
 			
 			else if (event.getKeyCode() == event.VK_A)
-				ship.leftEngines();
+				ship.rotateLeft();
 			
 			else if (event.getKeyCode() == event.VK_W)
-				ship.upEngines();
+				ship.forwardEngines();
 			
 			else if (event.getKeyCode() == event.VK_S)
-				ship.downEngines();
+				ship.reverseEngines();
 		}
 		
 		public void keyReleased (KeyEvent event) {
-			System.out.println("moveKeyListener (GameFrame): Released " + event.getKeyCode());
+			//System.out.println("moveKeyListener (GameFrame): Released " + event.getKeyCode());
 			
 			if (event.getKeyCode() == event.VK_D)
-				ship.rightEngines();
+				ship.rotateRight();
 			
 			else if (event.getKeyCode() == event.VK_A)
-				ship.leftEngines();
+				ship.rotateLeft();
 			
 			else if (event.getKeyCode() == event.VK_W)
-				ship.upEngines();
+				ship.forwardEngines();
 			
 			else if (event.getKeyCode() == event.VK_S)
-				ship.downEngines();
+				ship.reverseEngines();
 			
 		}
 		
