@@ -56,38 +56,38 @@ public class GameFrame extends JFrame {
 		public void keyPressed (KeyEvent event) {
 			//System.out.println("moveKeyListener (GameFrame): Pressed " + event.getKeyCode());
 			
-			if (event.getKeyCode() == event.VK_D)
+			if (event.getKeyCode() == KeyEvent.VK_D)
 				ship.rotateRight();
 			
-			else if (event.getKeyCode() == event.VK_A)
+			else if (event.getKeyCode() == KeyEvent.VK_A)
 				ship.rotateLeft();
 			
-			else if (event.getKeyCode() == event.VK_W)
+			else if (event.getKeyCode() == KeyEvent.VK_W)
 				ship.forwardEngines();
 			
-			else if (event.getKeyCode() == event.VK_S)
+			else if (event.getKeyCode() == KeyEvent.VK_S)
 				ship.reverseEngines();
 			
-			else if (event.getKeyCode() == event.VK_P)
+			else if (event.getKeyCode() == KeyEvent.VK_P)
 				ship.fireMain();
 		}
 		
 		public void keyReleased (KeyEvent event) {
 			//System.out.println("moveKeyListener (GameFrame): Released " + event.getKeyCode());
 			
-			if (event.getKeyCode() == event.VK_D)
+			if (event.getKeyCode() == KeyEvent.VK_D)
 				ship.rotateRight();
 			
-			else if (event.getKeyCode() == event.VK_A)
+			else if (event.getKeyCode() == KeyEvent.VK_A)
 				ship.rotateLeft();
 			
-			else if (event.getKeyCode() == event.VK_W)
+			else if (event.getKeyCode() == KeyEvent.VK_W)
 				ship.forwardEngines();
 			
-			else if (event.getKeyCode() == event.VK_S)
+			else if (event.getKeyCode() == KeyEvent.VK_S)
 				ship.reverseEngines();
 			
-			else if (event.getKeyCode() == event.VK_P)
+			else if (event.getKeyCode() == KeyEvent.VK_P)
 				ship.fireMain();
 			
 		}

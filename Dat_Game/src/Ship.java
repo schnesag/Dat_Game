@@ -10,7 +10,7 @@ public class Ship extends JPanel {
 	
 	int width, height;
 	double xcenter, ycenter;
-	int xpos, ypos;
+	double xpos, ypos;
 	
 	double xvel, yvel = 0;
 	double acceleration;
@@ -58,8 +58,8 @@ public class Ship extends JPanel {
 		ycenter = _ycenter;
 		// top left of JPanel in JFrame
 		// will be calculated just before drawing stage of UpdateShip.run() thread
-		xpos = (int) (xcenter - shipXCenter);
-		ypos = (int) (ycenter - shipYCenter);
+		xpos = xcenter - shipXCenter;
+		ypos = ycenter - shipYCenter;
 		
 		// triangle JPanel art positions
 		artXPoints = new int[3];
@@ -71,7 +71,8 @@ public class Ship extends JPanel {
 		xLabel = new JLabel("test");
 		yLabel = new JLabel("test2");
 		
-		mainGun = new Gun(parentFrame, this);
+		// create gun
+		mainGun = new Gun(parentFrame, this, 3300, 333);
 		
 		this.setLayout(null);
 		
@@ -85,7 +86,7 @@ public class Ship extends JPanel {
 		this.add(yLabel);
 		
 		// draw
-		this.setBounds(xpos, ypos, width, height);
+		this.setBounds((int) xpos, (int) ypos, width, height);
 		this.setVisible(true);
 		
 		(new UpdateShip()).start(); // start UpdateShip  thread
@@ -148,14 +149,14 @@ public class Ship extends JPanel {
 				ycenter += yvel;
 				
 				// calculate coordinate positions for top left corner of JPanel
-				xpos = (int) xcenter - (width / 2);
-				ypos = (int) ycenter - (width / 2);
+				xpos = xcenter - (width / 2);
+				ypos = ycenter - (width / 2);
 				
 				xLabel.setText(String.valueOf((int) xcenter));
 				yLabel.setText(String.valueOf((int) ycenter));
 				
 				self.repaint(); // redraw contents of JPanel
-				self.setBounds(xpos, ypos, width, height); // redraw JPanel in JFrame
+				self.setBounds((int) xpos, (int) ypos, width, height); // redraw JPanel in JFrame
 			
 			}
 		}
