@@ -191,4 +191,9 @@ public class Ship extends JPanel {
 		rotatingLeft = !rotatingLeft;
 	}
 	
+	// activate main gun
+	public void fireMain () {
+		mainGun.activate();
+	}
+	
 }

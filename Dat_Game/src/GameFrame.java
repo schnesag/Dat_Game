@@ -69,7 +69,7 @@ public class GameFrame extends JFrame {
 				ship.reverseEngines();
 			
 			else if (event.getKeyCode() == event.VK_P)
-				ship.mainGun.fire();
+				ship.fireMain();
 		}
 		
 		public void keyReleased (KeyEvent event) {
@@ -86,6 +86,9 @@ public class GameFrame extends JFrame {
 			
 			else if (event.getKeyCode() == event.VK_S)
 				ship.reverseEngines();
+			
+			else if (event.getKeyCode() == event.VK_P)
+				ship.fireMain();
 			
 		}
 		

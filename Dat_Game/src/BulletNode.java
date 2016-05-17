@@ -6,6 +6,5 @@ public class BulletNode {
 	
 	public BulletNode (Bullet _data) {
 		data = _data;
-		System.out.println("bullet node created");
 	}
 }
