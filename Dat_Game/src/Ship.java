@@ -6,7 +6,7 @@ import javax.swing.*;
 
 public class Ship extends JPanel {
 	
-	GameFrame parent;
+	GameFrame parentFrame;
 	
 	int width, height;
 	double xcenter, ycenter;
@@ -14,9 +14,10 @@ public class Ship extends JPanel {
 	
 	double xvel, yvel = 0;
 	double acceleration;
-	double maxvel = 6;
+	double maxspeed = 3;
 	
-	double rotation = - (Math.PI / 2); // starting rotation for ship
+	// in RADIANS
+	double rotation = - (Math.PI / 2); // starting rotation for ship (clockwise from west direction)
 	double rotationRate = 0.1; // radians per frame ship turns
 	
 	// coordinates at center of ship relative to JPanel
@@ -27,21 +28,23 @@ public class Ship extends JPanel {
 	int[] artXPoints;
 	int[] artYPoints;
 	
-	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	/* @TODO, create engine objects.  Then we won't need 16 classes and methods for the ship movement,
-	 *  only 4! */
-	
+	// are set by key bind methods to tell UpdateShip thread when and where to move
 	boolean forwardEnginesOn, reverseEnginesOn = false;
 	boolean rotatingRight, rotatingLeft = false;
 	
+	// Ship stat displays
+	JLabel xLabel;
+	JLabel yLabel;
+	
+	Gun mainGun;
+	
 	Ship self; // used when calling ship in private classes
 
-	public Ship (GameFrame _parent, float _xcenter, float _ycenter, int _width, int _height, double _acceleration) {
+	public Ship (GameFrame _parentFrame, float _xcenter, float _ycenter, int _width, int _height, double _acceleration) {
 		super();
 		self = this;
-		
-		parent = _parent;
-		
+		parentFrame = _parentFrame;
+
 		// dimensions of JPanel
 		width = _width;
 		height = _height;
@@ -55,8 +58,8 @@ public class Ship extends JPanel {
 		ycenter = _ycenter;
 		// top left of JPanel in JFrame
 		// will be calculated just before drawing stage of UpdateShip.run() thread
-		xpos = (int) xcenter - (width / 2);
-		ypos = (int) ycenter - (height / 2);
+		xpos = (int) (xcenter - shipXCenter);
+		ypos = (int) (ycenter - shipYCenter);
 		
 		// triangle JPanel art positions
 		artXPoints = new int[3];
@@ -65,31 +68,48 @@ public class Ship extends JPanel {
 		// rate which velocities increase
 		acceleration = _acceleration;
 		
+		xLabel = new JLabel("test");
+		yLabel = new JLabel("test2");
+		
+		mainGun = new Gun(parentFrame, this);
+		
+		this.setLayout(null);
+		
+		// Labels for X and Y position
+		xLabel.setLocation((int) (width * 0.125), (int) (height * 0.8));
+		xLabel.setSize((int) (width * 0.5), (int) (height * 0.15));
+		this.add(xLabel);
+		
+		yLabel.setLocation((int) (width * 0.625), (int) (height * 0.8));
+		yLabel.setSize((int) (width * 0.5), (int) (height * 0.15));
+		this.add(yLabel);
+		
+		// draw
 		this.setBounds(xpos, ypos, width, height);
 		this.setVisible(true);
 		
-		(new UpdateShip()).start();
-			
+		(new UpdateShip()).start(); // start UpdateShip  thread
+		
 	}
 	
 	private class UpdateShip extends Thread {
 		public void run() {
 			
 			while (true) {
+				// pause until next frame
 				try { Thread.sleep(16); }
-				catch (InterruptedException e) { }
+				catch (InterruptedException e) { System.out.println("Ship: thread didn't wait"); }
 				
-				
-				// screen wrapping for ship in JFrame parent
+				// screen wrapping for ship in JFrame parentFrame
 				if (xcenter < 0)
-					xcenter = parent.width + xcenter;
-				else if (xcenter > parent.width)
-					xcenter = xcenter - parent.width;
+					xcenter = parentFrame.getWidth() + xcenter;
+				else if (xcenter > parentFrame.getWidth())
+					xcenter = xcenter - parentFrame.getWidth();
 				
 				if (ycenter < 0)
-					ycenter = parent.height + ycenter;
-				else if (ycenter > parent.height)
-					ycenter = ycenter - parent.height;
+					ycenter = parentFrame.getHeight() + ycenter;
+				else if (ycenter > parentFrame.getHeight())
+					ycenter = ycenter - parentFrame.getHeight();
 				
 				
 				// ship rotation
@@ -98,7 +118,7 @@ public class Ship extends JPanel {
 				if (rotatingLeft)
 					rotation -= rotationRate;
 				
-				// triangle point rotation
+				// triangle point rotation based on rotation
 				artXPoints[0] = (int) (shipXCenter + 20 * Math.cos(rotation));
 				artXPoints[1] = (int) (shipXCenter + 20 * Math.cos(rotation - (Math.PI * 2 / 3)));
 				artXPoints[2] = (int) (shipXCenter + 20 * Math.cos(rotation + (Math.PI * 2 / 3)));
@@ -108,15 +128,20 @@ public class Ship extends JPanel {
 				artYPoints[2] = (int) (shipYCenter + 20 * Math.sin(rotation + (Math.PI * 2 / 3)));
 				
 				// changes ship velocities based on rotation
-				if (forwardEnginesOn) {
+				// checks whether combined velocity is less than the maximum allowed ( maxspeed )
+				if (forwardEnginesOn && Math.sqrt(Math.pow(xvel, 2) + Math.pow(yvel, 2)) <= maxspeed) {
 					xvel += Math.cos(rotation) * acceleration;
 					yvel += Math.sin(rotation) * acceleration;
 				}
-				if (reverseEnginesOn) {
+				
+				if (reverseEnginesOn && Math.sqrt(Math.pow(xvel, 2) + Math.pow(yvel, 2)) <= maxspeed) {
 					xvel -= Math.cos(rotation) * acceleration;
 					yvel -= Math.sin(rotation) * acceleration;
 				}
 
+				// slowly slow down ship
+				xvel *= 0.99;
+				yvel *= 0.99;
 				
 				// add velocities to positions
 				xcenter += xvel;
@@ -125,6 +150,9 @@ public class Ship extends JPanel {
 				// calculate coordinate positions for top left corner of JPanel
 				xpos = (int) xcenter - (width / 2);
 				ypos = (int) ycenter - (width / 2);
+				
+				xLabel.setText(String.valueOf((int) xcenter));
+				yLabel.setText(String.valueOf((int) ycenter));
 				
 				self.repaint(); // redraw contents of JPanel
 				self.setBounds(xpos, ypos, width, height); // redraw JPanel in JFrame
@@ -137,8 +165,6 @@ public class Ship extends JPanel {
 		super.paintComponent(g);
 		
 		g.setColor(Color.RED);
-		//g.fillRect(0, 0, width, height);
-		
 		// triangle of ship
 		g.fillPolygon(artXPoints, artYPoints, artXPoints.length);
 		
@@ -164,5 +190,5 @@ public class Ship extends JPanel {
 	public void rotateLeft () {
 		rotatingLeft = !rotatingLeft;
 	}
-
+	
 }

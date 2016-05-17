@@ -15,8 +15,11 @@ public class GameFrame extends JFrame {
 	public GameFrame (String _title, int _width, int _height) {
 		super(_title); // sets title
 		
-		width = _width; // saves width and height
+		// saves width and height
+		// use getWidth() and getHeight() to get updated height after resizing
+		width = _width;
 		height = _height;
+		
 		payUsMoney = new JOptionPane();
 		payUsMoney.showMessageDialog(this, "Please Pay $9.99 to continue using Software!","Get Dat Money",
 									 JOptionPane.WARNING_MESSAGE);
@@ -29,6 +32,7 @@ public class GameFrame extends JFrame {
 		// create ship and add to JFrame this
 		ship = new Ship(this, width / 2, height / 2, 80, 80, 0.1);
 		this.add(ship);
+
 		
 		this.addKeyListener(new moveKeyListener());
 		
@@ -47,7 +51,6 @@ public class GameFrame extends JFrame {
 	private class moveKeyListener implements KeyListener {
 		
 		public void keyTyped (KeyEvent event) {
-			
 		}
 		
 		public void keyPressed (KeyEvent event) {
@@ -64,6 +67,9 @@ public class GameFrame extends JFrame {
 			
 			else if (event.getKeyCode() == event.VK_S)
 				ship.reverseEngines();
+			
+			else if (event.getKeyCode() == event.VK_P)
+				ship.mainGun.fire();
 		}
 		
 		public void keyReleased (KeyEvent event) {
