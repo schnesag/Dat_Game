@@ -12,6 +12,8 @@ public class GameFrame extends JFrame {
 	JOptionPane payUsMoney;
 	JOptionPane instructions;
 	
+	Asteroid[] asteroids;
+	
 	public GameFrame (String _title, int _width, int _height) {
 		super(_title); // sets title
 		
@@ -35,6 +37,12 @@ public class GameFrame extends JFrame {
 
 		
 		this.addKeyListener(new moveKeyListener());
+		
+		// !! to be removed
+		asteroids = new Asteroid[4];
+		for (int i = 0; i < asteroids.length; i ++) 
+			asteroids[i] = new Asteroid(this, Math.random() * width, Math.random() * height,
+										30, Math.random() * Math.PI * 2, Math.random() * 4);
 		
 		/* JButton examples -----------
 		right = new JButton("-->");
@@ -91,126 +99,7 @@ public class GameFrame extends JFrame {
 				ship.fireMain();
 			
 		}
-		
 	}
 	
-	// OLD STUFF
-	
-	/*private class moveKeyListener implements KeyListener {
-		
-		public void keyTyped (KeyEvent event) {
-			
-		}
-		
-		public void keyPressed (KeyEvent event) {
-			System.out.println("moveKeyListener (GameFrame): Pressed " + event.getKeyCode());
-			
-			if (event.getKeyCode() == event.VK_D)
-				ship.startRightEngines();
-			
-			else if (event.getKeyCode() == event.VK_A)
-				ship.startLeftEngines();
-			
-			else if (event.getKeyCode() == event.VK_W)
-				ship.startUpEngines();
-			
-			else if (event.getKeyCode() == event.VK_S)
-				ship.startDownEngines();
-		}
-		
-		public void keyReleased (KeyEvent event) {
-			System.out.println("moveKeyListener (GameFrame): Released " + event.getKeyCode());
-			
-			if (event.getKeyCode() == event.VK_D)
-				ship.stopRightEngines();
-			
-			else if (event.getKeyCode() == event.VK_A)
-				ship.stopLeftEngines();
-			
-			else if (event.getKeyCode() == event.VK_W)
-				ship.stopUpEngines();
-			
-			else if (event.getKeyCode() == event.VK_S)
-				ship.stopDownEngines();
-			
-		}
-		
-	}*/
-	/*private class moveButtonMouseListener implements MouseListener {
-		
-		public void mouseClicked (MouseEvent event) {
-			if (event.getSource().equals(right))
-				ship.rightEnginesOn = true;
-			else if (event.getSource().equals(left))
-				ship.leftEnginesOn = true;
-			else if (event.getSource().equals(up))
-				ship.upEnginesOn = true;
-			else if (event.getSource().equals(down))
-				ship.downEnginesOn = true;
-		}
-		
-		public void mouseReleased (MouseEvent event) {
-			if (event.getSource().equals(right)) {
-				ship.rightEnginesOn = false;
-			}
-				
-			else if (event.getSource().equals(left)) {
-				ship.leftEnginesOn = false;
-			}
-					
-			else if (event.getSource().equals(up))
-				ship.upEnginesOn = false;
-						
-			else if (event.getSource().equals(down))
-				ship.downEnginesOn = false;
-		}
-		
-		public void mouseEntered (MouseEvent event) {}
-		public void mouseExited (MouseEvent event) {}
-		public void mousePressed (MouseEvent event) {}
-
-	}*/
-	
-	/*private class moveButtonChangeListener implements ChangeListener {
-		public void stateChanged (ChangeEvent event) {
-			
-			if (event.getSource().equals(right)) {
-				System.out.println("Change event detected");
-				ship.activateRightEngines();
-			}
-			
-			else if (event.getSource().equals(left))
-				ship.activateLeftEngines();
-			
-			else if (event.getSource().equals(up))
-				ship.activateUpEngines();
-			
-			else if (event.getSource().equals(down))
-				ship.activateDownEngines();
-			
-			else
-				System.out.println("moveButtonChangeListener (GameFrame): no button matching event.getSource()");
-		}
-	}*/
-	
-	/*private class moveButtonListener implements ActionListener {
-		public void actionPerformed (ActionEvent event) {
-			
-			//if (event.getSource().equals(right)) // if right button is source
-				//ship.moveRight(); // move right
-			
-			if (event.getSource().equals(left)) // if left button is source
-				ship.moveLeft(); // move left
-			
-			else if (event.getSource().equals(up)) // if up button is source
-				ship.moveUp(); // move up
-			
-			else if (event.getSource().equals(down)) // if down button is source
-				ship.moveDown(); // move down
-			
-			else // neither right or left button called
-				System.out.println("moveButtonListener: no button matching event.getSource()");
-		}
-	}*/
 	
 }

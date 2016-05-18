@@ -44,16 +44,28 @@ public class Gun {
 				if (firing && System.currentTimeMillis() - lastFireTime >= shotDelay)
 					fire();
 				
-				// iterate through Bullet()'s in queue, updating their positions
+				// iterate through Bullet()'s in queue, updating their positions and redrawing
 				BulletNode currentBulletNode = queue.head;
 				for (int i = 0; i < queue.size; i ++) {
-					currentBulletNode.data.updatePosition();
+					currentBulletNode.bullet.updatePosition();
+					currentBulletNode = currentBulletNode.next;
+				}
+				
+				currentBulletNode = queue.head;
+				for (int i = 0; i < queue.size; i ++) {
+					Asteroid currentAsteroid;
+					for (int k = 0; k < parentFrame.asteroids.length; k ++) {
+						currentAsteroid = parentFrame.asteroids[k];
+						if (currentBulletNode.bullet.collided(currentAsteroid.xcenter,
+								currentAsteroid.ycenter, currentAsteroid.radius))
+							System.out.println("Hit!");
+					}
 					currentBulletNode = currentBulletNode.next;
 				}
 				
 				// remove expired bullets
-				while (queue.size > 0 && queue.head.data.isExpired()) {
-					parentFrame.remove(queue.head.data);
+				while (queue.size > 0 && queue.head.bullet.isExpired()) {
+					parentFrame.remove(queue.head.bullet);
 					queue.dequeue();
 				}
 			}
@@ -65,7 +77,7 @@ public class Gun {
 	// TODO possibly remove originShip, sending in ship rotation, xvel, yvel
 		//when this method is called from Ship class
 	public void fire () {
-		Bullet newBullet = new Bullet(parentFrame, xcenter, ycenter,
+		Bullet newBullet = new Bullet(parentFrame, xcenter, ycenter, 2.5,
 						originShip.rotation, originShip.xvel, originShip.yvel, expireTime);
 
 		queue.enqueue(newBullet); // enqueue bullet

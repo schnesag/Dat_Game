@@ -7,7 +7,10 @@ public class Bullet extends JPanel {
 	double xpos, ypos; // top left corner position in JFrame
 	double xcenter, ycenter; // center position in JFrame
 	
-	int width, height; // dimensions of JPanel
+	// dimensions of JPanel
+	double radius; // multiplying by 2 must be an integer
+	double width, height;
+
 	
 	// center of bullet in JPanel dimensions
 	double bulletXCenter, bulletYCenter;
@@ -22,13 +25,14 @@ public class Bullet extends JPanel {
 	long creationTime; // time bullet created in milliseconds
 	long expireTime;
 	
-	public Bullet (GameFrame _parentFrame, double _xcenter, double _ycenter, double _fireRotation, double _initXVel, double _initYVel, long _expireTime) {
+	public Bullet (GameFrame _parentFrame, double _xcenter, double _ycenter, double _radius, double _fireRotation, double _initXVel, double _initYVel, long _expireTime) {
 		super();
 		parentFrame = _parentFrame;
 		
 		// dimensions of JPanel
-		width = 5;
-		height = 5;
+		radius = _radius;
+		width = radius * 2;
+		height = radius * 2;
 		
 		// center coordinate of JPanel in JPanel coordinates
 		bulletXCenter = width / 2;
@@ -47,7 +51,7 @@ public class Bullet extends JPanel {
 		creationTime = System.currentTimeMillis(); // time bullet was created in milliseconds
 		expireTime = _expireTime;
 		
-		this.setBounds((int) xpos, (int) ypos, width, height);
+		this.setBounds((int) xpos, (int) ypos, (int) width, (int) height);
 
 		/*System.out.println("new bullet at x: " + xcenter + " y: " + ycenter);
 		System.out.println("xvel: " + xvel + "yvel: " + yvel);*/
@@ -58,7 +62,7 @@ public class Bullet extends JPanel {
 		super.paintComponent(g);
 		
 		g.setColor(Color.BLUE);
-		g.fillRect(0, 0, width, height);
+		g.fillOval(0, 0, (int) width, (int) height);
 	}
 	
 	public void updatePosition () {
@@ -80,11 +84,20 @@ public class Bullet extends JPanel {
 		xpos = xcenter - bulletXCenter;
 		ypos = ycenter - bulletYCenter;
 		
-		this.setBounds((int) xpos, (int) ypos, width, height);
+		this.setBounds((int) xpos, (int) ypos, (int) width, (int) height);
 	}
 	
 	// checks if a bullet has been in the air for too long
 	public boolean isExpired () {
 		return System.currentTimeMillis() - creationTime >= expireTime;
+	}
+	
+	// checks if Bullet has collided with an circle of given parameters
+	public boolean collided (double _txcenter, double _tycenter, double _tradius) {
+		if (Math.sqrt(Math.pow(this.xcenter - _txcenter, 2) + Math.pow(this.ycenter - _tycenter, 2))
+						< this.radius + _tradius)
+			return true;
+		
+		return false;
 	}
 }

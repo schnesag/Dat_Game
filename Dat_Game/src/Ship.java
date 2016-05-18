@@ -8,9 +8,9 @@ public class Ship extends JPanel {
 	
 	GameFrame parentFrame;
 	
-	int width, height;
 	double xcenter, ycenter;
 	double xpos, ypos;
+	double width, height;
 	
 	double xvel, yvel = 0;
 	double acceleration;
@@ -40,7 +40,7 @@ public class Ship extends JPanel {
 	
 	Ship self; // used when calling ship in private classes
 
-	public Ship (GameFrame _parentFrame, float _xcenter, float _ycenter, int _width, int _height, double _acceleration) {
+	public Ship (GameFrame _parentFrame, double _xcenter, double _ycenter, double _width, double _height, double _acceleration) {
 		super();
 		self = this;
 		parentFrame = _parentFrame;
@@ -86,7 +86,7 @@ public class Ship extends JPanel {
 		this.add(yLabel);
 		
 		// draw
-		this.setBounds((int) xpos, (int) ypos, width, height);
+		this.setBounds((int) xpos, (int) ypos, (int) width, (int) height);
 		this.setVisible(true);
 		
 		(new UpdateShip()).start(); // start UpdateShip  thread
@@ -156,7 +156,7 @@ public class Ship extends JPanel {
 				yLabel.setText(String.valueOf((int) ycenter));
 				
 				self.repaint(); // redraw contents of JPanel
-				self.setBounds((int) xpos, (int) ypos, width, height); // redraw JPanel in JFrame
+				self.setBounds((int) xpos, (int) ypos, (int) width, (int) height); // redraw JPanel in JFrame
 			
 			}
 		}

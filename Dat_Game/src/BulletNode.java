@@ -1,10 +1,10 @@
 
 // class to hold Bullet() objects and 
 public class BulletNode {
-	Bullet data;
+	Bullet bullet;
 	BulletNode next;
 	
-	public BulletNode (Bullet _data) {
-		data = _data;
+	public BulletNode (Bullet _bullet) {
+		bullet = _bullet;
 	}
 }
