@@ -25,6 +25,8 @@ public class Bullet extends JPanel {
 	long creationTime; // time bullet created in milliseconds
 	long expireTime;
 	
+	boolean hit = false; // whether or not bullet has hit something
+	
 	public Bullet (GameFrame _parentFrame, double _xcenter, double _ycenter, double _radius, double _fireRotation, double _initXVel, double _initYVel, long _expireTime) {
 		super();
 		parentFrame = _parentFrame;
@@ -93,11 +95,19 @@ public class Bullet extends JPanel {
 	}
 	
 	// checks if Bullet has collided with an circle of given parameters
+	// returns true only if bullet hasn't hit anything (hit == false)
 	public boolean collided (double _txcenter, double _tycenter, double _tradius) {
 		if (Math.sqrt(Math.pow(this.xcenter - _txcenter, 2) + Math.pow(this.ycenter - _tycenter, 2))
-						< this.radius + _tradius)
+						< this.radius + _tradius && this.hit == false)
 			return true;
 		
 		return false;
+	}
+	
+	// if bullet has collided with something set 'hit' to true and remove from JFrame
+	// Bullet still exists and will be updated, but it can't trigger collisions and won't be displayed
+	public void collide () {
+		hit = true;
+		parentFrame.remove(this);
 	}
 }

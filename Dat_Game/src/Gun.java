@@ -7,7 +7,7 @@ public class Gun {
 	
 	double xcenter, ycenter;
 	
-	BulletQueue queue = new BulletQueue();
+	BulletList bulletList = new BulletList();
 	
 	boolean firing = false;
 
@@ -36,7 +36,7 @@ public class Gun {
 				try { Thread.sleep(16); }
 				catch (InterruptedException e) {System.out.println("Gun: thread didn't wait"); }
 				
-				// update Gun() position, where bullets eminate from
+				// update Gun() position, where bullets emanate from
 				xcenter = originShip.artXPoints[0] + originShip.xpos;
 				ycenter = originShip.artYPoints[0] + originShip.ypos;
 				
@@ -44,43 +44,58 @@ public class Gun {
 				if (firing && System.currentTimeMillis() - lastFireTime >= shotDelay)
 					fire();
 				
-				// iterate through Bullet()'s in queue, updating their positions and redrawing
-				BulletNode currentBulletNode = queue.head;
-				for (int i = 0; i < queue.size; i ++) {
+				// MOVEMENT
+				// iterate through Bullet()'s in bulletList, updating their positions and redrawing
+				BulletNode currentBulletNode = bulletList.head;
+				for (int i = 0; i < bulletList.size; i ++) {
 					currentBulletNode.bullet.updatePosition();
 					currentBulletNode = currentBulletNode.next;
 				}
 				
-				currentBulletNode = queue.head;
-				for (int i = 0; i < queue.size; i ++) {
+
+				// TODO implement class with Asteroids
+				
+				// COLLISIONS
+				// iterates through Bullets, for each Bullet, iterates through Asteroids
+				// checks if Bullets have collided with Asteroids
+				currentBulletNode = bulletList.head;
+				
+				for (int i = 0; i < bulletList.size; i ++) { // loop through Bullets
+					
 					Asteroid currentAsteroid;
-					for (int k = 0; k < parentFrame.asteroids.length; k ++) {
+					
+					for (int k = 0; k < parentFrame.asteroids.length; k ++) { // loop through Asteroids
 						currentAsteroid = parentFrame.asteroids[k];
+						// if collision has happened
 						if (currentBulletNode.bullet.collided(currentAsteroid.xcenter,
-								currentAsteroid.ycenter, currentAsteroid.radius))
-							System.out.println("Hit!");
+								currentAsteroid.ycenter, currentAsteroid.radius)) {
+							
+							parentFrame.remove(currentBulletNode.bullet);
+							bulletList.dequeue(i);
+						}
+						
 					}
 					currentBulletNode = currentBulletNode.next;
 				}
 				
-				// remove expired bullets
-				while (queue.size > 0 && queue.head.bullet.isExpired()) {
-					parentFrame.remove(queue.head.bullet);
-					queue.dequeue();
+				// remove time expired bullets
+				while (bulletList.size > 0 && bulletList.head.bullet.isExpired()) {
+					parentFrame.remove(bulletList.head.bullet);
+					bulletList.dequeue();
 				}
 			}
 		}
 	}
 	
 	
-	// add Bullet() to queue, adds to parentFrame, makes visable
+	// add Bullet() to bulletList, adds to parentFrame, makes visable
 	// TODO possibly remove originShip, sending in ship rotation, xvel, yvel
 		//when this method is called from Ship class
 	public void fire () {
 		Bullet newBullet = new Bullet(parentFrame, xcenter, ycenter, 2.5,
 						originShip.rotation, originShip.xvel, originShip.yvel, expireTime);
 
-		queue.enqueue(newBullet); // enqueue bullet
+		bulletList.enqueue(newBullet); // enqueue bullet
 
 		parentFrame.add(newBullet); // add to JFrame
 		newBullet.setVisible(true); // set visible
