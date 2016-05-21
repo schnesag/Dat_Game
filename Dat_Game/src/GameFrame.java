@@ -12,7 +12,10 @@ public class GameFrame extends JFrame {
 	JOptionPane payUsMoney;
 	JOptionPane instructions;
 	
-	Asteroid[] asteroids;
+	//TODO be removed
+	//Asteroid[] asteroids;
+	
+	AsteroidController asteroidController;
 	
 	public GameFrame (String _title, int _width, int _height) {
 		super(_title); // sets title
@@ -35,14 +38,17 @@ public class GameFrame extends JFrame {
 		ship = new Ship(this, width / 2, height / 2, 80, 80, 0.1);
 		this.add(ship);
 
+		asteroidController = new AsteroidController(this, 5, 3, 2);
 		
 		this.addKeyListener(new moveKeyListener());
 		
-		// !! to be removed
-		asteroids = new Asteroid[4];
+		// TODO !! to be removed
+		/*asteroids = new Asteroid[4];
 		for (int i = 0; i < asteroids.length; i ++) 
 			asteroids[i] = new Asteroid(this, Math.random() * width, Math.random() * height,
-										30, Math.random() * Math.PI * 2, Math.random() * 4);
+										30, Math.random() * Math.PI * 2, Math.random() * 4);*/
+		
+		
 		
 		/* JButton examples -----------
 		right = new JButton("-->");

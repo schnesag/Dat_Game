@@ -48,7 +48,7 @@ public class Asteroid extends JPanel {
 		this.setVisible(true);
 		parentFrame.add(this);
 		
-		(new UpdateAsteroid()).start();
+		//(new UpdateAsteroid()).start();
 		
 	}
 	
@@ -59,7 +59,32 @@ public class Asteroid extends JPanel {
 		g.fillOval(0, 0, (int) width, (int) height);
 	}
 	
-	private class UpdateAsteroid extends Thread {
+	public void updatePosition () {
+		// screen wrapping for ship in JFrame parentFrame
+		if (xcenter < 0)
+			xcenter = parentFrame.getWidth() + xcenter;
+		else if (xcenter > parentFrame.getWidth())
+			xcenter = xcenter - parentFrame.getWidth();
+		
+		if (ycenter < 0)
+			ycenter = parentFrame.getHeight() + ycenter;
+		else if (ycenter > parentFrame.getHeight())
+			ycenter = ycenter - parentFrame.getHeight();
+		
+		// add velocities to position
+		xcenter += xvel;
+		ycenter += yvel;
+		
+		// recalculate top left corner positions
+		xpos = xcenter - asteroidXCenter;
+		ypos = ycenter - asteroidYCenter;
+		
+		// redraw
+		self.repaint();
+		self.setBounds((int) xpos, (int) ypos, (int) width, (int) height);
+	}
+	
+	/*private class UpdateAsteroid extends Thread {
 		public void run () {
 			while (true) {
 				// pause until next frame
@@ -88,6 +113,6 @@ public class Asteroid extends JPanel {
 				
 			}
 		}
-	}
+	}*/
 	
 }

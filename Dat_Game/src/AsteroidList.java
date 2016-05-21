@@ -1,15 +1,15 @@
 
-public class BulletList {
+public class AsteroidList {
 	int size = 0;
-	BulletNode head;
-	BulletNode tail;
+	AsteroidNode head;
+	AsteroidNode tail;
 	
-	public BulletList () {
+	public AsteroidList () {
 	}
 	
-	public void enqueue (Bullet _newBullet) {
-		// adds a Bullet() object to a BulletNode() object and places at end of list
-		BulletNode newNode = new BulletNode (_newBullet);
+	public void enqueue (Asteroid _newAsteroid) {
+		// adds a asteroid() object to a asteroidNode() object and places at end of list
+		AsteroidNode newNode = new AsteroidNode (_newAsteroid);
 		
 		if (size == 0) { // no nodes in queue
 			head = newNode;
@@ -27,8 +27,8 @@ public class BulletList {
 	}
 	
 	public void dequeue () {
-		// removes the first BulletNode() from the queue
-		// returns currently selected bullet
+		// removes the first asteroidNode() from the queue
+		// returns currently selected asteroid
 		
 		if (size == 1) {
 			head = null;
@@ -40,14 +40,14 @@ public class BulletList {
 		}
 		
 		else if (size <= 0)
-			System.out.println("BulletQueue Error: trying to dequeue from empty queue");
+			System.out.println("AsteroidQueue Error: trying to dequeue from empty queue");
 		
 		size --;
 	}
 	
 	public void dequeue (int _index) {
-		// removes BulletNode() '_index' from the queue
-		// returns currently selected bullet
+		// removes asteroidNode() '_index' from the queue
+		// returns currently selected asteroid
 		
 		if (size == 1) {
 			head = null;
@@ -55,7 +55,7 @@ public class BulletList {
 		}
 		
 		else if (size > 1) {
-			BulletNode currentNode = head;
+			AsteroidNode currentNode = head;
 			
 			if (_index == 0) { // first item
 				currentNode = head;
@@ -81,7 +81,7 @@ public class BulletList {
 					currentNode.next.previous = currentNode.previous;
 					//currentNode.next = null;
 					//currentNode.previous = null;
-				// use for Bullets and Asteroids
+				// use for asteroids and Asteroids
 				// move Asteroids into a superclass that controls them with 1 thread
 			}
 			
@@ -89,7 +89,7 @@ public class BulletList {
 		}
 		
 		else if (size <= 0)
-			System.out.println("BulletQueue Error: trying to dequeue from empty queue");
+			System.out.println("AsteroidQueue Error: trying to dequeue from empty queue");
 		
 		size --;
 	}

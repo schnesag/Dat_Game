@@ -1,4 +1,11 @@
 
+/* TODO remake Asteroid controller class
+ * every thread call, if collision happens here, dequeue Bullet
+ * send Bullet object to AsteroidController
+ * it will listen for changes in this Bullet object, and find which
+ * asteroid it collided with, removing the asteroid
+ */
+
 
 public class Gun {
 	
@@ -62,18 +69,21 @@ public class Gun {
 				
 				for (int i = 0; i < bulletList.size; i ++) { // loop through Bullets
 					
-					Asteroid currentAsteroid;
+					AsteroidNode currentAsteroidNode= parentFrame.asteroidController.asteroidList.head;;
 					
-					for (int k = 0; k < parentFrame.asteroids.length; k ++) { // loop through Asteroids
-						currentAsteroid = parentFrame.asteroids[k];
+					for (int k = 0; k < parentFrame.asteroidController.asteroidList.size; k ++) { // loop through Asteroids
+						
 						// if collision has happened
-						if (currentBulletNode.bullet.collided(currentAsteroid.xcenter,
-								currentAsteroid.ycenter, currentAsteroid.radius)) {
+						if (currentBulletNode.bullet.collided(currentAsteroidNode.asteroid.xcenter,
+								currentAsteroidNode.asteroid.ycenter, currentAsteroidNode.asteroid.radius)) {
 							
 							parentFrame.remove(currentBulletNode.bullet);
 							bulletList.dequeue(i);
+							
+							parentFrame.asteroidController.addCollisionCheck(currentBulletNode.bullet);
+
 						}
-						
+						currentAsteroidNode = currentAsteroidNode.next;
 					}
 					currentBulletNode = currentBulletNode.next;
 				}
@@ -83,7 +93,9 @@ public class Gun {
 					parentFrame.remove(bulletList.head.bullet);
 					bulletList.dequeue();
 				}
+				
 			}
+			
 		}
 	}
 	
