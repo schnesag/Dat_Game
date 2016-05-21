@@ -177,24 +177,44 @@ public class Ship extends JPanel {
 		//this.repaint(); to redraw JPanel items
 	}
 	
-
-	public void forwardEngines () {
-		forwardEnginesOn = !forwardEnginesOn;
+	// Key Bind methods
+	// use explicit boolean declarations to avoid messups with KeyEvent system reversing booleans
+	public void forwardEnginesOn () {
+		forwardEnginesOn = true;
 	}
-	public void reverseEngines () {
-		reverseEnginesOn = !reverseEnginesOn;
+	public void reverseEnginesOn () {
+		reverseEnginesOn = true;
 	}
 	
-	public void rotateRight () {
-		rotatingRight = !rotatingRight;
+	public void rotateRightOn () {
+		rotatingRight = true;
 	}
-	public void rotateLeft () {
-		rotatingLeft = !rotatingLeft;
+	public void rotateLeftOn () {
+		rotatingLeft = true;
 	}
 	
 	// activate main gun
 	public void fireMain () {
 		mainGun.activate();
+	}
+	
+	public void forwardEnginesOff () {
+		forwardEnginesOn = false;
+	}
+	public void reverseEnginesOff () {
+		reverseEnginesOn = false;
+	}
+	
+	public void rotateRightOff () {
+		rotatingRight = false;
+	}
+	public void rotateLeftOff () {
+		rotatingLeft = false;
+	}
+	
+	// stop main gun
+	public void stopMain () {
+		mainGun.deactivate();
 	}
 	
 }

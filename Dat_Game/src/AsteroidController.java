@@ -9,7 +9,7 @@ public class AsteroidController {
 	int levels;
 	int splitFactor;
 	
-	BulletList collidedBullets;
+	IntegerList asteroidsToRemove;
 	
 	public AsteroidController (GameFrame _parentFrame, int _num, int _levels, int _splitFactor) {
 		self = this;
@@ -21,11 +21,11 @@ public class AsteroidController {
 		levels = _levels; // levels of asteroids there are
 		splitFactor = _splitFactor; // # of asteroids each one splits into
 		
-		collidedBullets = new BulletList();
+		asteroidsToRemove = new IntegerList();
 		
 		for (int i = 0; i < _num; i ++)
 			enqueue(new Asteroid(parentFrame, Math.random() * parentFrame.getWidth(), Math.random() * parentFrame.getHeight(),
-										30, Math.random() * Math.PI * 2, Math.random() * 4));
+										30, Math.random() * Math.PI * 2, Math.random() * 4, levels));
 		
 		(new UpdateAsteroids()).start();
 	}
@@ -38,30 +38,28 @@ public class AsteroidController {
 				try { Thread.sleep(16); }
 				catch (InterruptedException e) {System.out.println("AsteroidController: thread didn't wait"); }
 				
-				// Check Collisions
-				// loops through collidedBullets, finding which asteroids they collided with
-				while (collidedBullets.size > 0) {
-					BulletNode currentBulletNode = collidedBullets.head;
-					
-					for (int i = 0; i < collidedBullets.size; i ++) { // loop through Bullets
-						
-						AsteroidNode currentAsteroidNode = asteroidList.head;;
-						
-						for (int k = 0; k < asteroidList.size; k ++) { // loop through Asteroids
-							
-							// if collision has happened
-							if (currentBulletNode.bullet.collided(currentAsteroidNode.asteroid.xcenter,
-									currentAsteroidNode.asteroid.ycenter, currentAsteroidNode.asteroid.radius)) {
-								
-								parentFrame.remove(currentAsteroidNode.asteroid);
-								asteroidList.dequeue(k);
+				// Remove Asteroids
+				// goes through list of indexes, 'asteroidsToRemove', and removed those Asteroids specified from the game
+						// if integer is added while this is executing, there's a chance the wrong Asteroid will be removed,
+						// as the Asteroid indexes will have changed with the recent removal (impossible to fix unless
+						// I hold up Gun UpdateBullets and this update thread with boolean locks)
+				IntegerNode currentIntegerNode = asteroidsToRemove.head;
+				for (int i = 0; i < asteroidsToRemove.size; i ++) {
 
-							}
-							currentAsteroidNode = currentAsteroidNode.next;
-						}
-						collidedBullets.dequeue(i);
-						currentBulletNode = currentBulletNode.next;
+					Asteroid removedAsteroid = asteroidList.dequeue(currentIntegerNode.integer);
+					parentFrame.remove(removedAsteroid);
+					
+					asteroidsToRemove.dequeue();
+					
+					// if removedAsteroid was not of the smallest level, spawn more Asteroids
+					if (removedAsteroid.level > 1) {
+						for (int k = 0; k < splitFactor; k ++) 
+							enqueue(new Asteroid(parentFrame, removedAsteroid.xcenter, removedAsteroid.ycenter,
+									removedAsteroid.radius * 2 / 3, Math.random() * Math.PI * 2, removedAsteroid.vel * 1.2, 
+									removedAsteroid.level - 1));
 					}
+					
+					currentIntegerNode = currentIntegerNode.next;
 				}
 				
 				// Move
@@ -89,9 +87,9 @@ public class AsteroidController {
 		asteroidList.dequeue(_index);
 	}
 	
-	// adds a Bullet to check for collisions against
-	public void addCollisionCheck (Bullet _bulletToCheck) {
-		collidedBullets.enqueue(_bulletToCheck);
+	// adds an AsteroidList index of an Asteroid that has been shot and needs to be removed
+	public void queueRemoveAsteroid (int _indexToRemove) {
+		asteroidsToRemove.enqueue(_indexToRemove);
 	}
 	
 }

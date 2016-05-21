@@ -15,13 +15,14 @@ public class Asteroid extends JPanel {
 	double asteroidXCenter;
 	double asteroidYCenter;
 	
+	double vel;
 	double xvel, yvel;
 	double rotation;
 	
-	int type = 2; // 2 for big, 1 for medium, 0 for small
+	int level; // 2 for big, 1 for medium, 0 for small
 	
 	// TODO change some of these parameters to random !!
-	public Asteroid (GameFrame _parentFrame, double _xcenter, double _ycenter, double _radius, double _rotation, double _vel) {
+	public Asteroid (GameFrame _parentFrame, double _xcenter, double _ycenter, double _radius, double _rotation, double _vel, int _level) {
 		parentFrame = _parentFrame;
 		self = this;
 		
@@ -40,8 +41,11 @@ public class Asteroid extends JPanel {
 		
 		rotation = _rotation;
 		
-		xvel = Math.cos(rotation) * _vel;
-		yvel = Math.sin(rotation) * _vel;
+		vel = _vel;
+		xvel = Math.cos(rotation) * vel;
+		yvel = Math.sin(rotation) * vel;
+		
+		level = _level;
 		
 		// !! to be removed and placed in higher classes
 		this.setBounds((int) xpos, (int) ypos, (int) width, (int) height);

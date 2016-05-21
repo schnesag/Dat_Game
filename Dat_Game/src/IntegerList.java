@@ -1,15 +1,15 @@
 
-public class AsteroidList {
+public class IntegerList {
 	int size = 0;
-	AsteroidNode head;
-	AsteroidNode tail;
+	IntegerNode head;
+	IntegerNode tail;
 	
-	public AsteroidList () {
+	public IntegerList () {
 	}
 	
-	public void enqueue (Asteroid _newAsteroid) {
-		// adds a asteroid() object to a asteroidNode() object and places at end of list
-		AsteroidNode newNode = new AsteroidNode (_newAsteroid);
+	public void enqueue (int _newInteger) {
+		// adds a Integer() object to a IntegerNode() object and places at end of list
+		IntegerNode newNode = new IntegerNode (_newInteger);
 		
 		if (size == 0) { // no nodes in queue
 			head = newNode;
@@ -26,11 +26,9 @@ public class AsteroidList {
 		size ++;
 	}
 	
-	public Asteroid dequeue () {
-		// removes the first AsteroidNode() from the queue
-		// returns first asteroid
-		
-		AsteroidNode oldHeadNode = head;
+	public void dequeue () {
+		// removes the first IntegerNode() from the queue
+		// returns currently selected integer
 		
 		if (size == 1) {
 			head = null;
@@ -42,17 +40,14 @@ public class AsteroidList {
 		}
 		
 		else if (size <= 0)
-			System.out.println("AsteroidQueue Error: trying to dequeue from empty queue");
+			System.out.println("IntegerQueue Error: trying to dequeue from empty queue");
 		
 		size --;
-		return oldHeadNode.asteroid;
 	}
 	
-	public Asteroid dequeue (int _index) {
-		// removes AsteroidNode() '_index' from the queue
-		// returns currently selected asteroid
-		
-		AsteroidNode currentNode = head;
+	public void dequeue (int _index) {
+		// removes IntegerNode() '_index' from the queue
+		// returns currently selected integer
 		
 		if (size == 1) {
 			head = null;
@@ -60,7 +55,7 @@ public class AsteroidList {
 		}
 		
 		else if (size > 1) {
-			currentNode = head;
+			IntegerNode currentNode = head;
 			
 			if (_index == 0) { // first item
 				currentNode = head;
@@ -86,7 +81,7 @@ public class AsteroidList {
 					currentNode.next.previous = currentNode.previous;
 					//currentNode.next = null;
 					//currentNode.previous = null;
-				// use for asteroids and Asteroids
+				// use for Integers and Asteroids
 				// move Asteroids into a superclass that controls them with 1 thread
 			}
 			
@@ -94,10 +89,9 @@ public class AsteroidList {
 		}
 		
 		else if (size <= 0)
-			System.out.println("AsteroidQueue Error: trying to dequeue from empty queue");
+			System.out.println("IntegerQueue Error: trying to dequeue from empty queue");
 		
 		size --;
-		return currentNode.asteroid;
 	}
 	
 	

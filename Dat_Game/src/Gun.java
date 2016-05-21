@@ -1,9 +1,8 @@
 
-/* TODO remake Asteroid controller class
- * every thread call, if collision happens here, dequeue Bullet
- * send Bullet object to AsteroidController
- * it will listen for changes in this Bullet object, and find which
- * asteroid it collided with, removing the asteroid
+/* TODO add CollisionHandler class, with access to Bullets
+ * and Asteroids, that checks for collisions and sends
+ * indexes of objects for removal to controller classes
+ * Gun and AsteroidController
  */
 
 
@@ -59,9 +58,6 @@ public class Gun {
 					currentBulletNode = currentBulletNode.next;
 				}
 				
-
-				// TODO implement class with Asteroids
-				
 				// COLLISIONS
 				// iterates through Bullets, for each Bullet, iterates through Asteroids
 				// checks if Bullets have collided with Asteroids
@@ -77,10 +73,12 @@ public class Gun {
 						if (currentBulletNode.bullet.collided(currentAsteroidNode.asteroid.xcenter,
 								currentAsteroidNode.asteroid.ycenter, currentAsteroidNode.asteroid.radius)) {
 							
-							parentFrame.remove(currentBulletNode.bullet);
+							// remove Bullet
 							bulletList.dequeue(i);
+							parentFrame.remove(currentBulletNode.bullet);
 							
-							parentFrame.asteroidController.addCollisionCheck(currentBulletNode.bullet);
+							// send index of hit Asteroid to asteroidController for removal
+							parentFrame.asteroidController.queueRemoveAsteroid(k);
 
 						}
 						currentAsteroidNode = currentAsteroidNode.next;
@@ -100,9 +98,7 @@ public class Gun {
 	}
 	
 	
-	// add Bullet() to bulletList, adds to parentFrame, makes visable
-	// TODO possibly remove originShip, sending in ship rotation, xvel, yvel
-		//when this method is called from Ship class
+	// add Bullet() to bulletList, adds to parentFrame, makes visible
 	public void fire () {
 		Bullet newBullet = new Bullet(parentFrame, xcenter, ycenter, 2.5,
 						originShip.rotation, originShip.xvel, originShip.yvel, expireTime);
@@ -117,7 +113,10 @@ public class Gun {
 	
 	// set firing boolean to true, so gun starts shooting
 	public void activate () {
-		firing = !firing;
+		firing = true;
+	}
+	public void deactivate () {
+		firing = false;
 	}
 	
 }

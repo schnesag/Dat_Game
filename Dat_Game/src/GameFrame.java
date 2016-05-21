@@ -71,16 +71,16 @@ public class GameFrame extends JFrame {
 			//System.out.println("moveKeyListener (GameFrame): Pressed " + event.getKeyCode());
 			
 			if (event.getKeyCode() == KeyEvent.VK_D)
-				ship.rotateRight();
+				ship.rotateRightOn();
 			
 			else if (event.getKeyCode() == KeyEvent.VK_A)
-				ship.rotateLeft();
+				ship.rotateLeftOn();
 			
 			else if (event.getKeyCode() == KeyEvent.VK_W)
-				ship.forwardEngines();
+				ship.forwardEnginesOn();
 			
 			else if (event.getKeyCode() == KeyEvent.VK_S)
-				ship.reverseEngines();
+				ship.reverseEnginesOn();
 			
 			else if (event.getKeyCode() == KeyEvent.VK_P)
 				ship.fireMain();
@@ -90,19 +90,19 @@ public class GameFrame extends JFrame {
 			//System.out.println("moveKeyListener (GameFrame): Released " + event.getKeyCode());
 			
 			if (event.getKeyCode() == KeyEvent.VK_D)
-				ship.rotateRight();
+				ship.rotateRightOff();
 			
 			else if (event.getKeyCode() == KeyEvent.VK_A)
-				ship.rotateLeft();
+				ship.rotateLeftOff();
 			
 			else if (event.getKeyCode() == KeyEvent.VK_W)
-				ship.forwardEngines();
+				ship.forwardEnginesOff();
 			
 			else if (event.getKeyCode() == KeyEvent.VK_S)
-				ship.reverseEngines();
+				ship.reverseEnginesOff();
 			
 			else if (event.getKeyCode() == KeyEvent.VK_P)
-				ship.fireMain();
+				ship.stopMain();
 			
 		}
 	}
