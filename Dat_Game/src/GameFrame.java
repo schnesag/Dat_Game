@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+// TODO ship, asteroid, and bullet drawing in this class
+// so there aren't huge hitboxes
 
 public class GameFrame extends JFrame {
 

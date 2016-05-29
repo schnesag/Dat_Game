@@ -65,6 +65,13 @@ public class BulletList {
 				//currentNode.next = null;
 			}
 			
+			else if (_index == 0) { // first item
+				currentNode = head;
+				
+				currentNode.next.previous = null;
+				head = currentNode.next;
+			}
+			
 			else if (_index == this.size - 1) { // last item
 				currentNode = tail;
 				
@@ -76,7 +83,7 @@ public class BulletList {
 			else { // n'th item
 				for (int i = 0; i < _index; i ++) // find node to remove
 					currentNode = currentNode.next;
-				
+
 					currentNode.previous.next = currentNode.next;
 					currentNode.next.previous = currentNode.previous;
 					//currentNode.next = null;

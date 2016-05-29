@@ -39,32 +39,30 @@ public class AsteroidController {
 				catch (InterruptedException e) {System.out.println("AsteroidController: thread didn't wait"); }
 				
 				// Remove Asteroids
-				// goes through list of indexes, 'asteroidsToRemove', and removed those Asteroids specified from the game
-						// if integer is added while this is executing, there's a chance the wrong Asteroid will be removed,
-						// as the Asteroid indexes will have changed with the recent removal (impossible to fix unless
-						// I hold up Gun UpdateBullets and this update thread with boolean locks)
-				IntegerNode currentIntegerNode = asteroidsToRemove.head;
-				for (int i = 0; i < asteroidsToRemove.size; i ++) {
-
-					Asteroid removedAsteroid = asteroidList.dequeue(currentIntegerNode.integer);
-					parentFrame.remove(removedAsteroid);
+				// goes through Asteroids checking if their 'alive' boolean is false, if it is, remove the Asteroid
+				
+				AsteroidNode currentAsteroidNode = asteroidList.head;
+				for (int i = 0; i < asteroidList.size; i ++) {
 					
-					asteroidsToRemove.dequeue();
-					
-					// if removedAsteroid was not of the smallest level, spawn more Asteroids
-					if (removedAsteroid.level > 1) {
-						for (int k = 0; k < splitFactor; k ++) 
-							enqueue(new Asteroid(parentFrame, removedAsteroid.xcenter, removedAsteroid.ycenter,
-									removedAsteroid.radius * 2 / 3, Math.random() * Math.PI * 2, removedAsteroid.vel * 1.2, 
-									removedAsteroid.level - 1));
+					if (! currentAsteroidNode.asteroid.alive) {
+						dequeue(i);
+						parentFrame.remove(currentAsteroidNode.asteroid);
+						
+						// if Asteroid just removed was not of the smallest level, spawn more Asteroids
+						if (currentAsteroidNode.asteroid.level > 1) {
+							for (int k = 0; k < splitFactor; k ++) 
+								enqueue(new Asteroid(parentFrame, currentAsteroidNode.asteroid.xcenter, currentAsteroidNode.asteroid.ycenter,
+										currentAsteroidNode.asteroid.radius * 2 / 3, Math.random() * Math.PI * 2, currentAsteroidNode.asteroid.vel * 1.2, 
+										currentAsteroidNode.asteroid.level - 1));
+						}
 					}
 					
-					currentIntegerNode = currentIntegerNode.next;
+					currentAsteroidNode = currentAsteroidNode.next;
 				}
 				
 				// Move
 				// moves asteroids
-				AsteroidNode currentAsteroidNode = asteroidList.head;
+				currentAsteroidNode = asteroidList.head;
 				for (int i = 0; i < asteroidList.size; i ++) {
 					currentAsteroidNode.asteroid.updatePosition();
 					currentAsteroidNode = currentAsteroidNode.next;

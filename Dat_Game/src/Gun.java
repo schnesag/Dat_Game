@@ -77,8 +77,8 @@ public class Gun {
 							bulletList.dequeue(i);
 							parentFrame.remove(currentBulletNode.bullet);
 							
-							// send index of hit Asteroid to asteroidController for removal
-							parentFrame.asteroidController.queueRemoveAsteroid(k);
+							// set Asteroid's state to not alive, will be seen and removed by AsteroidController
+							currentAsteroidNode.asteroid.alive = false;
 
 						}
 						currentAsteroidNode = currentAsteroidNode.next;

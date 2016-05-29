@@ -21,6 +21,8 @@ public class Asteroid extends JPanel {
 	
 	int level; // 2 for big, 1 for medium, 0 for small
 	
+	boolean alive; // whether Asteroid is to be removed, checked by AsteroidController
+	
 	// TODO change some of these parameters to random !!
 	public Asteroid (GameFrame _parentFrame, double _xcenter, double _ycenter, double _radius, double _rotation, double _vel, int _level) {
 		parentFrame = _parentFrame;
@@ -46,6 +48,8 @@ public class Asteroid extends JPanel {
 		yvel = Math.sin(rotation) * vel;
 		
 		level = _level;
+		
+		alive = true;
 		
 		// !! to be removed and placed in higher classes
 		this.setBounds((int) xpos, (int) ypos, (int) width, (int) height);
